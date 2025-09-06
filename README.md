@@ -1,16 +1,15 @@
 # icongen
 
-A new Flutter project.
+AI‑assisted icon generation app built with Flutter. Create icons from:
+- Prompt (text-to-icon)
+- Sketch (rough drawing -> refined icon)
+- Photo (transform / stylize)
+
+## Features
+- Firebase AI driven icon generation (prompt + image inputs)
+- Multiple input modes (prompt / sketch / photo)
 
 ## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+1. Install Flutter SDK (3.8.x compatible)
+2. Install Dart (handled with Flutter)
+3. Run using 'flutter run'
