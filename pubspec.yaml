@@ -1,0 +1,29 @@
+name: icongen
+description: "An AI icon generator"
+
+publish_to: 'none'
+
+version: 0.1.0+1
+
+environment:
+  sdk: ^3.8.1
+
+dependencies:
+  cupertino_icons: ^1.0.8
+  firebase_ai: ^3.2.0
+  firebase_auth: ^6.0.2
+  firebase_core: ^4.1.0
+  flutter:
+    sdk: flutter
+  flutter_riverpod: ^3.0.0-dev.17
+  go_router: 16.2.1
+
+
+dev_dependencies:
+  flutter_lints: ^5.0.0
+  flutter_test:
+    sdk: flutter
+
+
+flutter:
+  uses-material-design: true

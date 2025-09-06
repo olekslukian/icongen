@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "966726926985",
+    "project_id": "icongen-c5e50",
+    "storage_bucket": "icongen-c5e50.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:966726926985:android:acb5cc32712300b47bbc58",
+        "android_client_info": {
+          "package_name": "com.olekslukian.icongen"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAmt9ScjwFNP4T0Zzsy6oBSPR5xgh9SfVw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

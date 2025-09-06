@@ -1,0 +1,13 @@
+{
+  "version": "0.1.0",
+  "configurations": [
+    
+    {
+      "name": "Icongen",
+      "request": "launch",
+      "type": "dart",
+      "flutterMode": "debug",
+      "program": "lib/main.dart"
+    }
+  ]
+}
