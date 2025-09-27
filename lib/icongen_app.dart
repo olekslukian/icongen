@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:icongen/presentation/home/home_screen.dart';
 
 class IcongenApp extends StatelessWidget {
   const IcongenApp({super.key});
@@ -6,13 +7,13 @@ class IcongenApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Icongen App',
       theme: ThemeData(
         useMaterial3: true,
         useSystemColors: true,
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: const Center(child: Text('Home screen')),
+      home: const HomeScreen(),
     );
   }
 }
