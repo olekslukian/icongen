@@ -2,6 +2,7 @@ import 'package:icongen/core/architecture/domain/non_empty_string_value_object.d
 import 'package:icongen/data/service/icon_generation_service.dart';
 import 'package:icongen/domain/entities/generated_icon_entity.dart';
 import 'package:icongen/utils/icongen_logger.dart';
+import 'package:icongen/utils/image_processor.dart';
 
 class IconGenerationRepository {
   const IconGenerationRepository(this.iconGenerationService);
@@ -18,7 +19,15 @@ class IconGenerationRepository {
     final result = await iconGenerationService.generateImage(prompt.getOr(''));
 
     return result.map(
-      onSuccess: GeneratedIconEntity.fromGenerationResult,
+      onSuccess: (data) {
+        final originalBytes = data.bytes;
+
+        final processedBytes = ImageProcessor.removeBackground(originalBytes);
+
+        return GeneratedIconEntity.fromGenerationResult(
+          data: processedBytes ?? originalBytes,
+        );
+      },
       onError: (e) {
         IcongenLogger.error(
           'ImagenRepository.generateIcon: Failed to generate icon',

@@ -1,14 +1,13 @@
 import 'dart:typed_data';
 
-import 'package:firebase_ai/firebase_ai.dart';
 import 'package:icongen/core/architecture/domain/entity.dart';
 import 'package:icongen/core/architecture/domain/validable.dart';
 import 'package:icongen/core/architecture/domain/value_object.dart';
 
 class GeneratedIconEntity extends Entity {
-  GeneratedIconEntity.fromGenerationResult(InlineDataPart data)
+  GeneratedIconEntity.fromGenerationResult({required Uint8List data})
     : id = ValueObject(DateTime.now().millisecondsSinceEpoch.toString()),
-      bytes = ValueObject(data.bytes);
+      bytes = ValueObject(data);
 
   GeneratedIconEntity.invalid()
     : id = ValueObject.invalid(),

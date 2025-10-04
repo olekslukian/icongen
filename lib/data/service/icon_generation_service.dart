@@ -31,8 +31,8 @@ class IconGenerationService {
   Iterable<Content> _buildIconPrompt(String prompt) {
     const iconRequirements = [
       'minimal flat icon',
-      'single solid color',
-      'transparent background',
+      'single solid black color',
+      '**fully white background(#FFFFFF)(255,255,255)**',
       'no text or labels',
       'no shadows or gradients',
       'clean vector style',
@@ -42,19 +42,19 @@ class IconGenerationService {
     ];
 
     const negativeElements = [
-      'no background',
-      'no text',
-      'no shadows',
-      'no gradients',
-      'no 3D effects',
-      'no realistic textures',
-      'no multiple colors',
-      'no decorations',
+      'text',
+      'shadows',
+      'gradients',
+      '3D effects',
+      'realistic textures',
+      'multiple colors',
+      'decorations',
     ];
 
     final completePrompt =
         '''
 Create a $prompt as a ${iconRequirements.join(', ')}.
+The icon MUST have a transparent background.
 Style requirements: ${negativeElements.join(', ')}.
 The icon should be suitable for user interface design, similar to Material Icons or Feather Icons.
 '''
