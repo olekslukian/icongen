@@ -1,22 +1,26 @@
-import 'package:icongen/core/architecture/domain/non_empty_string_value_object.dart';
-import 'package:icongen/data/service/icon_generation_service.dart';
+import 'package:icongen/core/architecture/domain/prompt_value_object.dart';
+import 'package:icongen/data/service/gemini_generation_service.dart';
 import 'package:icongen/domain/entities/generated_icon_entity.dart';
+import 'package:icongen/domain/repository/i_genration_repository.dart';
 import 'package:icongen/utils/icongen_logger.dart';
 import 'package:icongen/utils/image_processor.dart';
 
-class IconGenerationRepository {
-  const IconGenerationRepository(this.iconGenerationService);
+class GeminiGenerationRepository implements IGenerationRepository {
+  const GeminiGenerationRepository(this.iconGenerationService);
 
-  final IconGenerationService iconGenerationService;
+  final GeminiGenerationService iconGenerationService;
 
-  Future<GeneratedIconEntity> generateIcon(
-    NonEmptyStringValueObject prompt,
-  ) async {
+  @override
+  Future<GeneratedIconEntity> generateIcon(PromptValueObject prompt) async {
+    final id = DateTime.now().millisecondsSinceEpoch.toString();
+
     if (prompt.invalid) {
       return GeneratedIconEntity.invalid();
     }
 
-    final result = await iconGenerationService.generateImage(prompt.getOr(''));
+    final result = await iconGenerationService.generateImage(
+      prompt.completePromptAsContent,
+    );
 
     return result.map(
       onSuccess: (data) {
@@ -25,6 +29,7 @@ class IconGenerationRepository {
         final processedBytes = ImageProcessor.removeBackground(originalBytes);
 
         return GeneratedIconEntity.fromGenerationResult(
+          id: id,
           data: processedBytes ?? originalBytes,
         );
       },

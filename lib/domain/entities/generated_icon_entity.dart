@@ -5,9 +5,11 @@ import 'package:icongen/core/architecture/domain/validable.dart';
 import 'package:icongen/core/architecture/domain/value_object.dart';
 
 class GeneratedIconEntity extends Entity {
-  GeneratedIconEntity.fromGenerationResult({required Uint8List data})
-    : id = ValueObject(DateTime.now().millisecondsSinceEpoch.toString()),
-      bytes = ValueObject(data);
+  GeneratedIconEntity.fromGenerationResult({
+    required String id,
+    required Uint8List data,
+  }) : id = ValueObject(id),
+       bytes = ValueObject(data);
 
   GeneratedIconEntity.invalid()
     : id = ValueObject.invalid(),
