@@ -1,23 +1,23 @@
 import 'package:flutter_riverpod/legacy.dart';
-import 'package:icongen/core/architecture/domain/non_empty_string_value_object.dart';
-import 'package:icongen/domain/repository/icon_generation_repository.dart';
+import 'package:icongen/core/architecture/domain/prompt_value_object.dart';
+import 'package:icongen/domain/repository/i_genration_repository.dart';
 import 'package:icongen/presentation/home/state/icon_generation_state.dart';
 
 class IconGenerationController extends StateNotifier<IconGenerationState> {
-  IconGenerationController(IconGenerationRepository iconGenerationRepository)
+  IconGenerationController(IGenerationRepository iconGenerationRepository)
     : _iconGenerationRepository = iconGenerationRepository,
       super(IconGenerationState.initial());
 
-  final IconGenerationRepository _iconGenerationRepository;
+  final IGenerationRepository _iconGenerationRepository;
 
   void updatePrompt(String? prompt) {
     state = state.copyWith(
-      prompt: NonEmptyStringValueObject(prompt ?? ''),
+      prompt: PromptValueObject(prompt ?? ''),
       status: IconGenerationStatus.initial,
     );
   }
 
-  Future<void> generateIcon(NonEmptyStringValueObject prompt) async {
+  Future<void> generateIcon(PromptValueObject prompt) async {
     if (state.status == IconGenerationStatus.inProgress) {
       return;
     }

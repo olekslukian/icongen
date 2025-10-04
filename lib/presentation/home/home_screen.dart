@@ -27,9 +27,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final state = ref.watch(iconGenerationControllerProvider);
+    final state = ref.watch(geminiGenerationControllerProvider);
     final generationController = ref.read(
-      iconGenerationControllerProvider.notifier,
+      geminiGenerationControllerProvider.notifier,
     );
 
     return Scaffold(
