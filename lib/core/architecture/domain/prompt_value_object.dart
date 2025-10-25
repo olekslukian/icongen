@@ -22,7 +22,7 @@ Pure minimalistic style, no extra details, no background, no text, no watermark,
 
   @override
   String? validate(String? value) {
-    if (value == null || value.isEmpty || value.length <= 3) {
+    if (value == null || value.isEmpty || value.length < 3) {
       return null;
     }
 

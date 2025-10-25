@@ -32,13 +32,18 @@ class IconGenerationController extends StateNotifier<IconGenerationState> {
 
     final icon = await _iconGenerationRepository.generateIcon(prompt);
 
-    if (icon.invalid) {
+    final processsedIcon = await _iconGenerationRepository.processIcon(icon);
+
+    if (processsedIcon.invalid) {
       state = state.copyWith(status: IconGenerationStatus.failure);
 
       return;
     }
 
-    state = state.copyWith(status: IconGenerationStatus.success, icon: icon);
+    state = state.copyWith(
+      status: IconGenerationStatus.success,
+      icon: processsedIcon,
+    );
   }
 
   void reset() {
