@@ -3,7 +3,6 @@ import 'package:icongen/data/service/gemini_generation_service.dart';
 import 'package:icongen/domain/entities/generated_icon_entity.dart';
 import 'package:icongen/domain/repository/i_genration_repository.dart';
 import 'package:icongen/utils/icongen_logger.dart';
-import 'package:icongen/utils/image_processor.dart';
 
 class GeminiGenerationRepository implements IGenerationRepository {
   const GeminiGenerationRepository(this.iconGenerationService);
@@ -24,13 +23,9 @@ class GeminiGenerationRepository implements IGenerationRepository {
 
     return result.map(
       onSuccess: (data) {
-        final originalBytes = data.bytes;
-
-        final processedBytes = ImageProcessor.removeBackground(originalBytes);
-
         return GeneratedIconEntity.fromGenerationResult(
           id: id,
-          data: processedBytes ?? originalBytes,
+          data: data.bytes,
         );
       },
       onError: (e) {
@@ -42,5 +37,11 @@ class GeminiGenerationRepository implements IGenerationRepository {
         return GeneratedIconEntity.invalid();
       },
     );
+  }
+
+  @override
+  Future<GeneratedIconEntity> processIcon(GeneratedIconEntity icon) {
+    // TODO: implement processIcon
+    throw UnimplementedError();
   }
 }

@@ -3,4 +3,5 @@ import 'package:icongen/domain/entities/generated_icon_entity.dart';
 
 abstract interface class IGenerationRepository {
   Future<GeneratedIconEntity> generateIcon(PromptValueObject prompt);
+  Future<GeneratedIconEntity> processIcon(GeneratedIconEntity icon);
 }

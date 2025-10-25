@@ -7,7 +7,7 @@ import 'package:icongen/core/architecture/domain/value_object.dart';
 class GeneratedIconEntity extends Entity {
   GeneratedIconEntity.fromGenerationResult({
     required String id,
-    required Uint8List data,
+    required Uint8List? data,
   }) : id = ValueObject(id),
        bytes = ValueObject(data);
 
@@ -17,6 +17,7 @@ class GeneratedIconEntity extends Entity {
 
   final ValueObject<String> id;
   final ValueObject<Uint8List> bytes;
+
   @override
   List<IValidable> get props => [id, bytes];
 }

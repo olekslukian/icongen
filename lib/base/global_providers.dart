@@ -10,7 +10,8 @@ import 'package:icongen/presentation/home/state/icon_generation_controller.dart'
 import 'package:icongen/presentation/home/state/icon_generation_state.dart';
 
 final aiGeminiModelProvider = Provider<GenerativeModel>((ref) {
-  final ai = FirebaseAI.googleAI();
+  final ai = FirebaseAI.vertexAI();
+
   return ai.generativeModel(
     model: AiSettings.geminiModelName,
     generationConfig: GenerationConfig(
@@ -22,45 +23,51 @@ final aiGeminiModelProvider = Provider<GenerativeModel>((ref) {
   );
 });
 
-final aiImagenModelProvider = Provider<ImagenModel>((ref) {
-  final ai = FirebaseAI.googleAI();
+final aiImagenGenerativeModelProvider = Provider<ImagenModel>((ref) {
+  final ai = FirebaseAI.vertexAI();
+
   return ai.imagenModel(
-    model: AiSettings.imagenModelName,
+    model: AiSettings.imagenGenerativeModelName,
+    generationConfig: ImagenGenerationConfig(
+      imageFormat: ImagenFormat.png(),
+      negativePrompt: AiSettings.negativePromptParameters,
+    ),
+  );
+});
+
+final aiImagenEditingModelProvider = Provider<ImagenModel>((ref) {
+  final ai = FirebaseAI.vertexAI();
+
+  return ai.imagenModel(
+    model: AiSettings.imagenEditingModelName,
     generationConfig: ImagenGenerationConfig(imageFormat: ImagenFormat.png()),
   );
 });
 
-final geminiGenerationServiceProvider = Provider<GeminiGenerationService>((
-  ref,
-) {
-  return GeminiGenerationService(ref.watch(aiGeminiModelProvider));
-});
+final geminiGenerationServiceProvider = Provider<GeminiGenerationService>(
+  (ref) => GeminiGenerationService(ref.watch(aiGeminiModelProvider)),
+);
 
-final imagenGenerationServiceProvider = Provider<ImagenGenerationService>((
-  ref,
-) {
-  return ImagenGenerationService(ref.watch(aiImagenModelProvider));
-});
+final imagenGenerationServiceProvider = Provider<ImagenGenerationService>(
+  (ref) => ImagenGenerationService(
+    generativeModel: ref.watch(aiImagenGenerativeModelProvider),
+    editingModel: ref.watch(aiImagenEditingModelProvider),
+  ),
+);
 
 final geminiGenerationRepositoryProvider = Provider<GeminiGenerationRepository>(
-  (ref) {
-    return GeminiGenerationRepository(
-      ref.watch(geminiGenerationServiceProvider),
-    );
-  },
+  (ref) =>
+      GeminiGenerationRepository(ref.watch(geminiGenerationServiceProvider)),
 );
 
 final imagenGenerationRepositoryProvider = Provider<ImagenGenerationRepository>(
-  (ref) {
-    return ImagenGenerationRepository(
-      ref.watch(imagenGenerationServiceProvider),
-    );
-  },
+  (ref) =>
+      ImagenGenerationRepository(ref.watch(imagenGenerationServiceProvider)),
 );
 
 final geminiGenerationControllerProvider =
-    StateNotifierProvider<IconGenerationController, IconGenerationState>((ref) {
-      return IconGenerationController(
+    StateNotifierProvider<IconGenerationController, IconGenerationState>(
+      (ref) => IconGenerationController(
         ref.watch(imagenGenerationRepositoryProvider),
-      );
-    });
+      ),
+    );
