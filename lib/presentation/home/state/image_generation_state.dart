@@ -1,8 +1,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:icongen/core/architecture/domain/prompt_value_object.dart';
-import 'package:icongen/domain/entities/generated_icon_entity.dart';
+import 'package:icongen/domain/entities/generated_image_entity.dart';
 
-enum IconGenerationStatus {
+enum ImageGenerationStatus {
   initial,
   inProgress,
   success,
@@ -10,28 +10,28 @@ enum IconGenerationStatus {
   invalidPrompt,
 }
 
-class IconGenerationState extends Equatable {
-  const IconGenerationState._({
+class ImageGenerationState extends Equatable {
+  const ImageGenerationState._({
     required this.status,
     required this.icon,
     required this.prompt,
   });
 
-  IconGenerationState.initial()
-    : status = IconGenerationStatus.initial,
-      icon = GeneratedIconEntity.invalid(),
+  ImageGenerationState.initial()
+    : status = ImageGenerationStatus.initial,
+      icon = GeneratedImageEntity.invalid(),
       prompt = PromptValueObject.invalid();
 
-  final IconGenerationStatus status;
-  final GeneratedIconEntity icon;
+  final ImageGenerationStatus status;
+  final GeneratedImageEntity icon;
   final PromptValueObject prompt;
 
-  IconGenerationState copyWith({
-    IconGenerationStatus? status,
-    GeneratedIconEntity? icon,
+  ImageGenerationState copyWith({
+    ImageGenerationStatus? status,
+    GeneratedImageEntity? icon,
     PromptValueObject? prompt,
   }) {
-    return IconGenerationState._(
+    return ImageGenerationState._(
       status: status ?? this.status,
       icon: icon ?? this.icon,
       prompt: prompt ?? this.prompt,

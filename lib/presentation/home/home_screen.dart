@@ -1,16 +1,11 @@
 import 'dart:async';
-import 'dart:io';
-import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:gal/gal.dart';
 import 'package:icongen/base/global_providers.dart';
 import 'package:icongen/core/constants/app_constants.dart';
 import 'package:icongen/core/theme/app_colors.dart';
-import 'package:icongen/presentation/home/state/icon_generation_state.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:share_plus/share_plus.dart';
+import 'package:icongen/presentation/home/state/image_generation_controller.dart';
+import 'package:icongen/presentation/home/state/image_generation_state.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -30,44 +25,34 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     super.dispose();
   }
 
-  Future<void> _saveImage(Uint8List imageBytes) async {
-    final scaffoldMessenger = ScaffoldMessenger.of(context);
-    final fileName = 'icon_${DateTime.now().millisecondsSinceEpoch}.png';
+  Future<void> _onSave(ImageGenerationController controller) async {
+    final success = await controller.saveImage();
 
-    try {
-      final tempDir = await getTemporaryDirectory();
-      final file = File('${tempDir.path}/$fileName');
-      await file.writeAsBytes(imageBytes);
-
-      await Gal.putImage(file.path);
-
-      scaffoldMessenger.showSnackBar(
-        const SnackBar(content: Text('Image saved to gallery!')),
-      );
-
-      await file.delete();
-    } catch (e) {
-      scaffoldMessenger.showSnackBar(
-        SnackBar(content: Text('Error saving image: $e')),
-      );
+    if (!mounted) {
+      return;
     }
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          success ? 'Image saved to gallery!' : 'Failed to save image.',
+        ),
+      ),
+    );
   }
 
-  Future<void> _shareImage(Uint8List imageBytes, String prompt) async {
-    try {
-      final tempDir = await getTemporaryDirectory();
-      final fileName = 'icon_${DateTime.now().millisecondsSinceEpoch}.png';
-      final file = File('${tempDir.path}/$fileName');
-      await file.writeAsBytes(imageBytes);
+  Future<void> _onShare(ImageGenerationController controller) async {
+    final success = await controller.shareImage();
 
-      await SharePlus.instance.share(ShareParams(files: [XFile(file.path)]));
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Error sharing image: $e')));
-      }
+    if (!mounted) {
+      return;
     }
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(success ? 'Image shared!' : 'Failed to share image.'),
+      ),
+    );
   }
 
   @override
@@ -94,15 +79,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       ),
                       child: _IconGenerationResult(
                         state: state,
-                        onSave: _saveImage,
-                        onShare: _shareImage,
+                        onSave: () => _onSave(generationController),
+                        onShare: () => _onShare(generationController),
                         onReset: () {
                           generationController.reset();
                           _textController.clear();
                           _focusNode.requestFocus();
                         },
                         onTryAgain: () async =>
-                            generationController.generateIcon(state.prompt),
+                            generationController.generateImage(state.prompt),
                       ),
                     ),
                   );
@@ -123,11 +108,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   border: const OutlineInputBorder(),
                   suffixIcon: IconButton(
                     icon: const Icon(Icons.send),
-                    onPressed: state.status == IconGenerationStatus.inProgress
+                    onPressed: state.status == ImageGenerationStatus.inProgress
                         ? null
                         : () {
                             unawaited(
-                              generationController.generateIcon(state.prompt),
+                              generationController.generateImage(state.prompt),
                             );
                             _focusNode.unfocus();
                           },
@@ -151,16 +136,16 @@ class _IconGenerationResult extends StatelessWidget {
     required this.onShare,
   });
 
-  final IconGenerationState state;
+  final ImageGenerationState state;
   final VoidCallback onReset;
   final VoidCallback onTryAgain;
-  final void Function(Uint8List) onSave;
-  final void Function(Uint8List, String) onShare;
+  final VoidCallback onSave;
+  final VoidCallback onShare;
 
   @override
   Widget build(BuildContext context) {
     return switch (state.status) {
-      IconGenerationStatus.initial => const Column(
+      ImageGenerationStatus.initial => const Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(
@@ -172,19 +157,16 @@ class _IconGenerationResult extends StatelessWidget {
           Text('Enter a description to generate an icon'),
         ],
       ),
-      IconGenerationStatus.inProgress => const Column(
+      ImageGenerationStatus.inProgress => const Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [CircularProgressIndicator()],
       ),
-      IconGenerationStatus.success => Column(
+      ImageGenerationStatus.success => Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Container(
             padding: const EdgeInsets.all(AppConstants.spacingM),
-            child: Image.memory(
-              state.icon.bytes.getOr(Uint8List(0)),
-              fit: BoxFit.contain,
-            ),
+            child: Image.memory(state.icon.bytes.get, fit: BoxFit.contain),
           ),
           const SizedBox(height: AppConstants.spacingL),
           Text(
@@ -198,23 +180,12 @@ class _IconGenerationResult extends StatelessWidget {
             alignment: WrapAlignment.center,
             children: [
               ElevatedButton.icon(
-                onPressed: () {
-                  final bytes = state.icon.bytes.getOrNull;
-                  if (bytes != null) {
-                    onSave(bytes);
-                  }
-                },
+                onPressed: onSave,
                 icon: const Icon(Icons.download, size: AppConstants.iconM),
                 label: const Text('Save'),
               ),
               ElevatedButton.icon(
-                onPressed: () {
-                  final bytes = state.icon.bytes.getOrNull;
-                  final prompt = state.prompt.getOr('');
-                  if (bytes != null) {
-                    onShare(bytes, prompt);
-                  }
-                },
+                onPressed: onShare,
                 icon: const Icon(Icons.share, size: AppConstants.iconM),
                 label: const Text('Share'),
               ),
@@ -226,7 +197,7 @@ class _IconGenerationResult extends StatelessWidget {
           ),
         ],
       ),
-      IconGenerationStatus.failure => Column(
+      ImageGenerationStatus.failure => Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const Icon(
@@ -248,7 +219,7 @@ class _IconGenerationResult extends StatelessWidget {
           ),
         ],
       ),
-      IconGenerationStatus.invalidPrompt => Column(
+      ImageGenerationStatus.invalidPrompt => Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const Icon(
