@@ -1,12 +1,14 @@
 import 'package:icongen/data/service/save_and_share_service.dart';
 import 'package:icongen/domain/entities/generated_image_entity.dart';
+import 'package:icongen/domain/repository/i_save_and_share_service.dart';
 import 'package:icongen/utils/icongen_logger.dart';
 
-class SaveAndShareRepository {
+class SaveAndShareRepository implements ISaveAndShareService {
   SaveAndShareRepository(this._service);
 
   final SaveAndShareService _service;
 
+  @override
   Future<bool> saveImage(GeneratedImageEntity image) async {
     if (image.invalid) {
       return false;
@@ -27,6 +29,7 @@ class SaveAndShareRepository {
     );
   }
 
+  @override
   Future<bool> shareImage(GeneratedImageEntity image) async {
     if (image.invalid) {
       return false;
