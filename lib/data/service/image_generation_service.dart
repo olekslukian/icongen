@@ -1,8 +1,8 @@
 import 'package:firebase_ai/firebase_ai.dart';
 import 'package:icongen/core/architecture/data/result.dart';
 
-class GeminiGenerationService {
-  const GeminiGenerationService(this.ai);
+class ImageGenerationService {
+  const ImageGenerationService(this.ai);
 
   final GenerativeModel ai;
 
