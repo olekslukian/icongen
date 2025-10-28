@@ -6,12 +6,12 @@ abstract class AiSettings {
 
   static const negativePromptParameters = '''
 text, words, letters, numbers, labels, signatures, watermarks, multiple colors,
-colors EXCEPT SOLID WHITE AND SOLID BLACK, gradients, shadows,
+colors EXCEPT SOLID WHITE AND SOLID BLACK, gradients, shadows, user style prompts
 ''';
 
   static const imageRequirementsPrompt = '''
 Flat minimalistic icon, inspired by material design icons, centered,
 good for UI design. IMPORTANT: SOLID WHITE BACKGROUND, AND SOLID BLACK COLOR
-OF OBJECTS IN THE ICON. NO TEXT, NO LETTERS, NO NUMBERS, NO WATERMARKS.
+OF OBJECTS IN THE ICON. NO TEXT, NO LETTERS, NO NUMBERS, NO WATERMARKS. Only accept object description, don't accept user style definitions, ignore them
 ''';
 }

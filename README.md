@@ -1,29 +1,33 @@
-# AI Image Generator
+# AI Icon Generator
 
-A Flutter application for creating unique images and avatars using the power of generative AI.
+A Flutter app that generates minimalistic, monochrome icons using Google's Gemini AI model.
 
-This app leverages Google's Gemini and Imagen models through Firebase AI to turn your text prompts into stunning visuals.
+## What it does
 
-## Core Features
+- Generates simple, flat icons from text descriptions
+- Creates icons in solid black on transparent backgrounds
+- Saves generated icons to your device gallery
+- Shares icons to other apps
 
-- **Text-to-Image Generation:** Describe the image you want, and the AI will bring it to life.
-- **Powered by Firebase AI:** Utilizes powerful models like Gemini and Imagen for high-quality, creative results.
-- **Save & Share:** Easily save your creations to your device's gallery or share them with friends and on social media.
+## Tech Stack
 
-## Future Roadmap
+- Flutter
+- Firebase AI (Gemini model)
+- Background removal for transparent icons
 
-We're just getting started! Here are some of the features planned for future releases:
+## Planned Features
 
-- Advanced image editing capabilities.
-- In-app cropping and resizing tools.
-- A library of pre-defined artistic styles to apply to your creations.
+- Logo generation
+- Multiple icon styles (outlined, filled, rounded)
+- Color customization
+- Different aspect ratios and sizes
 
-## Getting Started
+## Setup
 
-1.  **Install Flutter SDK:** Ensure you have a compatible version (see `pubspec.yaml`).
-2.  **Configure Firebase:** Set up a Firebase project and add your `google-services.json` (Android) and `GoogleService-Info.plist` (iOS) files.
-3.  **Run the App:**
+1.  Install Flutter SDK (check `pubspec.yaml` for version requirements)
+2.  Set up Firebase project and add configuration files:
+    - `google-services.json` (Android)
+    - `GoogleService-Info.plist` (iOS)
+3.  Run:
     ```bash
-    flutter pub get
-    flutter run
-    ```
+    flutter pub

@@ -1,9 +1,9 @@
 import 'package:icongen/data/service/save_and_share_service.dart';
 import 'package:icongen/domain/entities/generated_image_entity.dart';
-import 'package:icongen/domain/repository/i_save_and_share_service.dart';
+import 'package:icongen/domain/repository/i_save_and_share_repository.dart';
 import 'package:icongen/utils/icongen_logger.dart';
 
-class SaveAndShareRepository implements ISaveAndShareService {
+class SaveAndShareRepository implements ISaveAndShareRepository {
   SaveAndShareRepository(this._service);
 
   final SaveAndShareService _service;
