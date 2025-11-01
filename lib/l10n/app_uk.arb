@@ -1,0 +1,16 @@
+{
+  "@@locale": "uk",
+  "enterDescriptionToGenerate": "Додайте опис щоб згенерувати зображення",
+  "failedToSaveImage": "Не вдалося зберегти зображення",
+  "failedToShareImage": "Не вдалося поділитися зображенням",
+  "failedToGenerateImage": "Не вдалося згенерувати зображення",
+  "generateAnother": "Згенерувати інше",
+  "generateFromText": "Генерувати з тексту",
+  "imageSavedToGallery": "Зображення збережено до Галереї",
+  "imageShared": "Зображення відправлено",
+  "invalidPromptMessage": "Промпт мусить бути більше 3х символів",
+  "promptFieldHint": "Наприклад, чашка гарячої кави",
+  "save": "Зберегти",
+  "share": "Поділитися",
+  "tryAgain": "Спробувати ще раз"
+}

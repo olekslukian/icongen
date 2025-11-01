@@ -46,17 +46,14 @@ class ImageGenerationRepository implements IGenerationRepository {
   }
 
   Future<Uint8List?> _removeBackground(Uint8List imageBytes) async {
-    await BackgroundRemover.instance.initializeOrt();
-
     final processedImage = await BackgroundRemover.instance.removeBg(
+      threshold: 0.6,
       imageBytes,
     );
 
     final byteData = await processedImage.toByteData(
       format: ImageByteFormat.png,
     );
-
-    BackgroundRemover.instance.dispose();
 
     return byteData?.buffer.asUint8List();
   }

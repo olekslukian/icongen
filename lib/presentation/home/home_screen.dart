@@ -4,8 +4,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:icongen/base/global_providers.dart';
 import 'package:icongen/core/constants/app_constants.dart';
 import 'package:icongen/core/theme/app_colors.dart';
+import 'package:icongen/l10n/generated/app_localizations.dart';
 import 'package:icongen/presentation/home/state/image_generation_controller.dart';
 import 'package:icongen/presentation/home/state/image_generation_state.dart';
+import 'package:icongen/utils/context_extensions.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -25,7 +27,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     super.dispose();
   }
 
-  Future<void> _onSave(ImageGenerationController controller) async {
+  Future<void> _onSave({
+    required ImageGenerationController controller,
+    required AppLocalizations l10n,
+  }) async {
     final success = await controller.saveImage();
 
     if (!mounted) {
@@ -35,13 +40,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
-          success ? 'Image saved to gallery!' : 'Failed to save image.',
+          success ? l10n.imageSavedToGallery : l10n.failedToSaveImage,
         ),
       ),
     );
   }
 
-  Future<void> _onShare(ImageGenerationController controller) async {
+  Future<void> _onShare({
+    required ImageGenerationController controller,
+    required AppLocalizations l10n,
+  }) async {
     final success = await controller.shareImage();
 
     if (!mounted) {
@@ -50,7 +58,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(success ? 'Image shared!' : 'Failed to share image.'),
+        content: Text(success ? l10n.imageShared : l10n.failedToShareImage),
       ),
     );
   }
@@ -61,9 +69,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final generationController = ref.read(
       geminiGenerationControllerProvider.notifier,
     );
+    final l10n = context.l10n;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Generate from text')),
+      appBar: AppBar(title: Text(l10n.generateFromText)),
       body: SafeArea(
         child: Column(
           children: [
@@ -79,8 +88,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       ),
                       child: _IconGenerationResult(
                         state: state,
-                        onSave: () => _onSave(generationController),
-                        onShare: () => _onShare(generationController),
+                        onSave: () => _onSave(
+                          controller: generationController,
+                          l10n: l10n,
+                        ),
+                        onShare: () => _onShare(
+                          controller: generationController,
+                          l10n: l10n,
+                        ),
                         onReset: () {
                           generationController.reset();
                           _textController.clear();
@@ -104,7 +119,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 focusNode: _focusNode,
                 onChanged: generationController.updatePrompt,
                 decoration: InputDecoration(
-                  hintText: 'e.g., A minimalist coffee cup icon',
+                  hintText: l10n.promptFieldHint,
                   border: const OutlineInputBorder(),
                   suffixIcon: IconButton(
                     icon: const Icon(Icons.send),
@@ -144,17 +159,19 @@ class _IconGenerationResult extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
+
     return switch (state.status) {
-      ImageGenerationStatus.initial => const Column(
+      ImageGenerationStatus.initial => Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
+          const Icon(
             Icons.auto_awesome,
             size: AppConstants.iconXl,
             color: Colors.grey,
           ),
-          SizedBox(height: AppConstants.spacingM),
-          Text('Enter a description to generate an icon'),
+          const SizedBox(height: AppConstants.spacingM),
+          Text(l10n.enterDescriptionToGenerate),
         ],
       ),
       ImageGenerationStatus.inProgress => const Column(
@@ -170,10 +187,11 @@ class _IconGenerationResult extends StatelessWidget {
           ),
           const SizedBox(height: AppConstants.spacingL),
           Text(
-            'Prompt: ${state.prompt.getOr("")}',
+            state.prompt.getOr(''),
             style: const TextStyle(fontStyle: FontStyle.italic),
             textAlign: TextAlign.center,
           ),
+          const SizedBox(height: AppConstants.spacingL),
           Wrap(
             spacing: AppConstants.spacingM,
             runSpacing: AppConstants.spacingS,
@@ -182,16 +200,16 @@ class _IconGenerationResult extends StatelessWidget {
               ElevatedButton.icon(
                 onPressed: onSave,
                 icon: const Icon(Icons.download, size: AppConstants.iconM),
-                label: const Text('Save'),
+                label: Text(l10n.save),
               ),
               ElevatedButton.icon(
                 onPressed: onShare,
                 icon: const Icon(Icons.share, size: AppConstants.iconM),
-                label: const Text('Share'),
+                label: Text(l10n.share),
               ),
               ElevatedButton(
                 onPressed: onReset,
-                child: const Text('Generate Another'),
+                child: Text(l10n.generateAnother),
               ),
             ],
           ),
@@ -206,17 +224,14 @@ class _IconGenerationResult extends StatelessWidget {
             color: AppColors.error,
           ),
           const SizedBox(height: AppConstants.spacingM),
-          const Text(
-            'Failed to generate icon',
-            style: TextStyle(color: AppColors.error),
+          Text(
+            l10n.failedToGenerateImage,
+            style: const TextStyle(color: AppColors.error),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: AppConstants.spacingM),
 
-          ElevatedButton(
-            onPressed: onReset,
-            child: const Text('Generate Another'),
-          ),
+          ElevatedButton(onPressed: onReset, child: Text(l10n.generateAnother)),
         ],
       ),
       ImageGenerationStatus.invalidPrompt => Column(
@@ -228,13 +243,13 @@ class _IconGenerationResult extends StatelessWidget {
             color: AppColors.error,
           ),
           const SizedBox(height: AppConstants.spacingM),
-          const Text(
-            'Prompt should be longer than 3 characters',
-            style: TextStyle(color: AppColors.error),
+          Text(
+            l10n.invalidPromptMessage,
+            style: const TextStyle(color: AppColors.error),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: AppConstants.spacingM),
-          ElevatedButton(onPressed: onTryAgain, child: const Text('Try Again')),
+          ElevatedButton(onPressed: onTryAgain, child: Text(l10n.tryAgain)),
         ],
       ),
     };
