@@ -1,0 +1,16 @@
+{
+  "@@locale": "en",
+  "enterDescriptionToGenerate": "Enter a description to generate an icon",
+  "failedToSaveImage": "Failed to save image",
+  "failedToShareImage": "Failed to share image",
+  "failedToGenerateImage": "Failed to generate image",
+  "generateAnother": "Generate another",
+  "generateFromText": "Generate from text",
+  "imageSavedToGallery": "Image saved to gallery",
+  "imageShared": "Image shared",
+  "invalidPromptMessage": "Prompt should be longer than 3 characters",
+  "promptFieldHint": "e.g., A coffee cup",
+  "save": "Save",
+  "share": "Share",
+  "tryAgain": "Try again"
+}
