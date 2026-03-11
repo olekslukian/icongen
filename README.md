@@ -30,4 +30,4 @@ A Flutter app that generates minimalistic, monochrome icons using Google's Gemin
     - `GoogleService-Info.plist` (iOS)
 3.  Run:
     ```bash
-    flutter pub
+    flutter run
