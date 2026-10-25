@@ -1,24 +1,34 @@
 import 'dart:typed_data';
 
-import 'package:spritecraft/core/architecture/domain/bytes_value_object.dart';
 import 'package:spritecraft/core/architecture/domain/entity.dart';
-import 'package:spritecraft/core/architecture/domain/validable.dart';
-import 'package:spritecraft/core/architecture/domain/value_object.dart';
+import 'package:spritecraft/core/architecture/domain/sanitizers.dart';
 
-class GeneratedImageEntity extends Entity {
-  GeneratedImageEntity.fromGenerationResult({
-    required String id,
+final class GeneratedImageEntity extends Entity {
+  const GeneratedImageEntity._({
+    required super.id,
+    required this.prompt,
+    required this.bytes,
+  });
+
+  factory GeneratedImageEntity.fromGeneration({
+    required String? id,
+    required String? prompt,
     required Uint8List? data,
-  }) : id = ValueObject(id),
-       bytes = BytesValueObject(data);
+  }) {
+    if (data == null || data.isEmpty) {
+      throw const EntityValidationException('"bytes" cannot be empty');
+    }
 
-  GeneratedImageEntity.invalid()
-    : id = ValueObject.invalid(),
-      bytes = BytesValueObject.invalid();
+    return GeneratedImageEntity._(
+      id: id.requireValid('id'),
+      prompt: prompt.requireValid('prompt'),
+      bytes: data,
+    );
+  }
 
-  final ValueObject<String> id;
-  final BytesValueObject bytes;
+  final String prompt;
+  final Uint8List bytes;
 
   @override
-  List<IValidable> get props => [id, bytes];
+  List<Object?> get props => [id, prompt];
 }

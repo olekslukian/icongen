@@ -1,8 +1,10 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:spritecraft/base/global_providers.dart';
-import 'package:spritecraft/core/architecture/domain/prompt_value_object.dart';
+import 'package:spritecraft/core/architecture/domain/app_failure.dart';
+import 'package:spritecraft/domain/entities/generated_image_entity.dart';
 import 'package:spritecraft/domain/repository/i_generation_repository.dart';
-import 'package:spritecraft/domain/repository/save_and_share_repository.dart';
+import 'package:spritecraft/domain/repository/i_save_and_share_repository.dart';
+import 'package:spritecraft/domain/validation/prompt_validation.dart';
 import 'package:spritecraft/presentation/home/state/image_generation_state.dart';
 
 part 'image_generation_controller.g.dart';
@@ -10,53 +12,98 @@ part 'image_generation_controller.g.dart';
 @Riverpod(keepAlive: true)
 class GeminiGenerationController extends _$GeminiGenerationController {
   late IGenerationRepository _imageGenerationRepository;
-  late SaveAndShareRepository _saveAndShareRepository;
+  late ISaveAndShareRepository _saveAndShareRepository;
 
   @override
   ImageGenerationState build() {
     _imageGenerationRepository = ref.watch(imageGenerationRepositoryProvider);
     _saveAndShareRepository = ref.watch(saveAndShareRepositoryProvider);
-    return ImageGenerationState.initial();
+    return const ImageGenerationInitial();
   }
 
   void updatePrompt(String? prompt) {
-    state = state.copyWith(
-      prompt: PromptValueObject(prompt ?? ''),
-      status: ImageGenerationStatus.initial,
+    state = ImageGenerationInitial(prompt: prompt ?? '');
+  }
+
+  Future<void> generateImage() async {
+    final currentState = state;
+    if (currentState is ImageGenerationInProgress ||
+        (currentState is ImageGenerationSuccess &&
+            currentState.actionState is ImageGenerationActionInProgress)) {
+      return;
+    }
+
+    final prompt = state.prompt.trim();
+    if (!prompt.isValidPrompt) {
+      state = ImageGenerationFailure(
+        prompt: prompt,
+        failure: const ValidationFailure('prompt'),
+      );
+      return;
+    }
+
+    state = ImageGenerationInProgress(prompt: prompt);
+    final result = await _imageGenerationRepository.generateImage(prompt);
+    state = result.map(
+      onSuccess: (image) =>
+          ImageGenerationSuccess(prompt: prompt, image: image),
+      onFailure: (failure) =>
+          ImageGenerationFailure(prompt: prompt, failure: failure),
     );
   }
 
-  Future<void> generateImage(PromptValueObject prompt) async {
-    if (state.status == ImageGenerationStatus.inProgress) {
+  Future<void> saveImage() => _performImageAction(
+    ImageGenerationAction.save,
+    _saveAndShareRepository.saveImage,
+  );
+
+  Future<void> shareImage() => _performImageAction(
+    ImageGenerationAction.share,
+    _saveAndShareRepository.shareImage,
+  );
+
+  Future<void> _performImageAction(
+    ImageGenerationAction action,
+    Future<bool> Function(GeneratedImageEntity image) perform,
+  ) async {
+    final currentState = state;
+    if (currentState is! ImageGenerationSuccess ||
+        currentState.actionState is ImageGenerationActionInProgress) {
       return;
     }
 
-    state = state.copyWith(status: ImageGenerationStatus.inProgress);
+    final image = currentState.image;
+    state = ImageGenerationSuccess(
+      prompt: currentState.prompt,
+      image: image,
+      actionState: ImageGenerationActionInProgress(action),
+    );
 
-    if (prompt.invalid) {
-      state = state.copyWith(status: ImageGenerationStatus.invalidPrompt);
-
+    final succeeded = await perform(image);
+    final latestState = state;
+    if (latestState is! ImageGenerationSuccess ||
+        !identical(latestState.image, image) ||
+        latestState.actionState is! ImageGenerationActionInProgress) {
       return;
     }
 
-    final image = await _imageGenerationRepository.generateImage(prompt);
-
-    if (image.invalid) {
-      state = state.copyWith(status: ImageGenerationStatus.failure);
-
-      return;
-    }
-
-    state = state.copyWith(status: ImageGenerationStatus.success, icon: image);
+    state = succeeded
+        ? ImageGenerationSuccess(
+            prompt: currentState.prompt,
+            image: currentState.image,
+            actionState: ImageGenerationActionSuccess(action),
+          )
+        : ImageGenerationSuccess(
+            prompt: currentState.prompt,
+            image: currentState.image,
+            actionState: ImageGenerationActionFailure(
+              action: action,
+              failure: const StorageFailure(),
+            ),
+          );
   }
 
-  Future<bool> saveImage() async =>
-      _saveAndShareRepository.saveImage(state.icon);
-
-  Future<bool> shareImage() async =>
-      _saveAndShareRepository.shareImage(state.icon);
-
   void reset() {
-    state = ImageGenerationState.initial();
+    state = const ImageGenerationInitial();
   }
 }

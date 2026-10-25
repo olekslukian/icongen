@@ -5,11 +5,12 @@ import 'package:gal/gal.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:spritecraft/core/architecture/data/result.dart';
+import 'package:spritecraft/core/architecture/domain/app_failure.dart';
 
 class SaveAndShareService {
   const SaveAndShareService();
 
-  Future<Result<bool>> saveImage(Uint8List imageBytes) async {
+  Future<Result<void>> saveImage(Uint8List imageBytes) async {
     final fileName = 'icon_${DateTime.now().millisecondsSinceEpoch}.png';
 
     try {
@@ -21,13 +22,13 @@ class SaveAndShareService {
 
       await file.delete();
 
-      return Result.success(true);
+      return const Result.success(null);
     } catch (e) {
-      return Result.failure(Exception('Error saving image: $e'));
+      return Result.failure(StorageFailure('Error saving image: $e'));
     }
   }
 
-  Future<Result<bool>> shareImage(Uint8List imageBytes) async {
+  Future<Result<void>> shareImage(Uint8List imageBytes) async {
     try {
       final tempDir = await getTemporaryDirectory();
       final fileName = 'icon_${DateTime.now().millisecondsSinceEpoch}.png';
@@ -37,9 +38,9 @@ class SaveAndShareService {
       await SharePlus.instance.share(ShareParams(files: [XFile(file.path)]));
       await file.delete();
 
-      return Result.success(true);
+      return const Result.success(null);
     } catch (e) {
-      return Result.failure(Exception('Error sharing image: $e'));
+      return Result.failure(StorageFailure('Error sharing image: $e'));
     }
   }
 }

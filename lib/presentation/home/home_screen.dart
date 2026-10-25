@@ -1,9 +1,10 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spritecraft/core/constants/app_constants.dart';
 import 'package:spritecraft/core/theme/app_colors.dart';
-import 'package:spritecraft/l10n/generated/app_localizations.dart';
+import 'package:spritecraft/presentation/extensions/app_failure_l10n.dart';
 import 'package:spritecraft/presentation/home/state/image_generation_controller.dart';
 import 'package:spritecraft/presentation/home/state/image_generation_state.dart';
 import 'package:spritecraft/utils/context_extensions.dart';
@@ -26,42 +27,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     super.dispose();
   }
 
-  Future<void> _onSave({
-    required GeminiGenerationController controller,
-    required AppLocalizations l10n,
-  }) async {
-    final success = await controller.saveImage();
-
-    if (!mounted) {
-      return;
-    }
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          success ? l10n.imageSavedToGallery : l10n.failedToSaveImage,
-        ),
-      ),
-    );
-  }
-
-  Future<void> _onShare({
-    required GeminiGenerationController controller,
-    required AppLocalizations l10n,
-  }) async {
-    final success = await controller.shareImage();
-
-    if (!mounted) {
-      return;
-    }
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(success ? l10n.imageShared : l10n.failedToShareImage),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(geminiGenerationControllerProvider);
@@ -70,6 +35,32 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
     final l10n = context.l10n;
 
+    ref.listen(geminiGenerationControllerProvider, (previous, next) {
+      if (!mounted || next is! ImageGenerationSuccess) {
+        return;
+      }
+
+      final message = switch (next.actionState) {
+        ImageGenerationActionSuccess(:final action) =>
+          action == ImageGenerationAction.save
+              ? l10n.imageSavedToGallery
+              : l10n.imageShared,
+        ImageGenerationActionFailure(:final action, :final failure) =>
+          failure.localized(
+            l10n,
+            storageMessage: action == ImageGenerationAction.save
+                ? l10n.failedToSaveImage
+                : l10n.failedToShareImage,
+          ),
+        _ => null,
+      };
+      if (message != null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(message)),
+        );
+      }
+    });
+
     return Scaffold(
       appBar: AppBar(title: Text(l10n.generateFromText)),
       body: SafeArea(
@@ -77,35 +68,28 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           children: [
             Expanded(
               child: LayoutBuilder(
-                builder: (context, constraints) {
-                  return SingleChildScrollView(
-                    padding: const EdgeInsets.all(AppConstants.spacingM),
-                    child: ConstrainedBox(
-                      constraints: BoxConstraints(
-                        minHeight:
-                            constraints.maxHeight - (AppConstants.spacingM * 2),
-                      ),
-                      child: _IconGenerationResult(
-                        state: state,
-                        onSave: () => _onSave(
-                          controller: generationController,
-                          l10n: l10n,
-                        ),
-                        onShare: () => _onShare(
-                          controller: generationController,
-                          l10n: l10n,
-                        ),
-                        onReset: () {
-                          generationController.reset();
-                          _textController.clear();
-                          _focusNode.requestFocus();
-                        },
-                        onTryAgain: () async =>
-                            generationController.generateImage(state.prompt),
-                      ),
+                builder: (context, constraints) => SingleChildScrollView(
+                  padding: const EdgeInsets.all(AppConstants.spacingM),
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(
+                      minHeight:
+                          constraints.maxHeight - (AppConstants.spacingM * 2),
                     ),
-                  );
-                },
+                    child: _IconGenerationResult(
+                      state: state,
+                      onSave: () => unawaited(generationController.saveImage()),
+                      onShare: () =>
+                          unawaited(generationController.shareImage()),
+                      onReset: () {
+                        generationController.reset();
+                        _textController.clear();
+                        _focusNode.requestFocus();
+                      },
+                      onTryAgain: () =>
+                          unawaited(generationController.generateImage()),
+                    ),
+                  ),
+                ),
               ),
             ),
             Padding(
@@ -122,12 +106,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   border: const OutlineInputBorder(),
                   suffixIcon: IconButton(
                     icon: const Icon(Icons.send),
-                    onPressed: state.status == ImageGenerationStatus.inProgress
+                    onPressed: state is ImageGenerationInProgress
                         ? null
                         : () {
-                            unawaited(
-                              generationController.generateImage(state.prompt),
-                            );
+                            unawaited(generationController.generateImage());
                             _focusNode.unfocus();
                           },
                   ),
@@ -160,8 +142,8 @@ class _IconGenerationResult extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
 
-    return switch (state.status) {
-      ImageGenerationStatus.initial => Column(
+    return switch (state) {
+      ImageGenerationInitial() => Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const Icon(
@@ -173,20 +155,25 @@ class _IconGenerationResult extends StatelessWidget {
           Text(l10n.enterDescriptionToGenerate),
         ],
       ),
-      ImageGenerationStatus.inProgress => const Column(
+      ImageGenerationInProgress() => const Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [CircularProgressIndicator()],
       ),
-      ImageGenerationStatus.success => Column(
+      ImageGenerationSuccess(
+        :final image,
+        :final prompt,
+        :final actionState,
+      ) =>
+        Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Container(
             padding: const EdgeInsets.all(AppConstants.spacingM),
-            child: Image.memory(state.icon.bytes.get, fit: BoxFit.contain),
+            child: Image.memory(image.bytes, fit: BoxFit.contain),
           ),
           const SizedBox(height: AppConstants.spacingL),
           Text(
-            state.prompt.getOr(''),
+            prompt,
             style: const TextStyle(fontStyle: FontStyle.italic),
             textAlign: TextAlign.center,
           ),
@@ -197,12 +184,16 @@ class _IconGenerationResult extends StatelessWidget {
             alignment: WrapAlignment.center,
             children: [
               ElevatedButton.icon(
-                onPressed: onSave,
+                onPressed: actionState is ImageGenerationActionInProgress
+                    ? null
+                    : onSave,
                 icon: const Icon(Icons.download, size: AppConstants.iconM),
                 label: Text(l10n.save),
               ),
               ElevatedButton.icon(
-                onPressed: onShare,
+                onPressed: actionState is ImageGenerationActionInProgress
+                    ? null
+                    : onShare,
                 icon: const Icon(Icons.share, size: AppConstants.iconM),
                 label: Text(l10n.share),
               ),
@@ -214,7 +205,7 @@ class _IconGenerationResult extends StatelessWidget {
           ),
         ],
       ),
-      ImageGenerationStatus.failure => Column(
+      ImageGenerationFailure(:final failure) => Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const Icon(
@@ -224,31 +215,15 @@ class _IconGenerationResult extends StatelessWidget {
           ),
           const SizedBox(height: AppConstants.spacingM),
           Text(
-            l10n.failedToGenerateImage,
+            failure.localized(l10n),
             style: const TextStyle(color: AppColors.error),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: AppConstants.spacingM),
-
-          ElevatedButton(onPressed: onReset, child: Text(l10n.generateAnother)),
-        ],
-      ),
-      ImageGenerationStatus.invalidPrompt => Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Icon(
-            Icons.error_outline,
-            size: AppConstants.iconXl,
-            color: AppColors.error,
+          ElevatedButton(
+            onPressed: onTryAgain,
+            child: Text(l10n.tryAgain),
           ),
-          const SizedBox(height: AppConstants.spacingM),
-          Text(
-            l10n.invalidPromptMessage,
-            style: const TextStyle(color: AppColors.error),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: AppConstants.spacingM),
-          ElevatedButton(onPressed: onTryAgain, child: Text(l10n.tryAgain)),
         ],
       ),
     };

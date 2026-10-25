@@ -153,11 +153,11 @@ final imageGenerationRepositoryProvider = ImageGenerationRepositoryProvider._();
 final class ImageGenerationRepositoryProvider
     extends
         $FunctionalProvider<
-          ImageGenerationRepository,
-          ImageGenerationRepository,
-          ImageGenerationRepository
+          IGenerationRepository,
+          IGenerationRepository,
+          IGenerationRepository
         >
-    with $Provider<ImageGenerationRepository> {
+    with $Provider<IGenerationRepository> {
   ImageGenerationRepositoryProvider._()
     : super(
         from: null,
@@ -174,26 +174,26 @@ final class ImageGenerationRepositoryProvider
 
   @$internal
   @override
-  $ProviderElement<ImageGenerationRepository> $createElement(
+  $ProviderElement<IGenerationRepository> $createElement(
     $ProviderPointer pointer,
   ) => $ProviderElement(pointer);
 
   @override
-  ImageGenerationRepository create(Ref ref) {
+  IGenerationRepository create(Ref ref) {
     return imageGenerationRepository(ref);
   }
 
   /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(ImageGenerationRepository value) {
+  Override overrideWithValue(IGenerationRepository value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $SyncValueProvider<ImageGenerationRepository>(value),
+      providerOverride: $SyncValueProvider<IGenerationRepository>(value),
     );
   }
 }
 
 String _$imageGenerationRepositoryHash() =>
-    r'e3f9b5b040dd1aff304f95587b174ea56e176eb5';
+    r'b9aee0f681c0ee3edd95e98e859197d787c1b7fd';
 
 @ProviderFor(saveAndShareRepository)
 final saveAndShareRepositoryProvider = SaveAndShareRepositoryProvider._();
@@ -201,11 +201,11 @@ final saveAndShareRepositoryProvider = SaveAndShareRepositoryProvider._();
 final class SaveAndShareRepositoryProvider
     extends
         $FunctionalProvider<
-          SaveAndShareRepository,
-          SaveAndShareRepository,
-          SaveAndShareRepository
+          ISaveAndShareRepository,
+          ISaveAndShareRepository,
+          ISaveAndShareRepository
         >
-    with $Provider<SaveAndShareRepository> {
+    with $Provider<ISaveAndShareRepository> {
   SaveAndShareRepositoryProvider._()
     : super(
         from: null,
@@ -222,23 +222,23 @@ final class SaveAndShareRepositoryProvider
 
   @$internal
   @override
-  $ProviderElement<SaveAndShareRepository> $createElement(
+  $ProviderElement<ISaveAndShareRepository> $createElement(
     $ProviderPointer pointer,
   ) => $ProviderElement(pointer);
 
   @override
-  SaveAndShareRepository create(Ref ref) {
+  ISaveAndShareRepository create(Ref ref) {
     return saveAndShareRepository(ref);
   }
 
   /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(SaveAndShareRepository value) {
+  Override overrideWithValue(ISaveAndShareRepository value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $SyncValueProvider<SaveAndShareRepository>(value),
+      providerOverride: $SyncValueProvider<ISaveAndShareRepository>(value),
     );
   }
 }
 
 String _$saveAndShareRepositoryHash() =>
-    r'071f1ace3c77eea56d0104c8129c4361bcce74d4';
+    r'a3020d32f13d877080d9866e5d4c8009e080a7e7';

@@ -3,6 +3,8 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:spritecraft/core/ai_settings.dart';
 import 'package:spritecraft/data/service/image_generation_service.dart';
 import 'package:spritecraft/data/service/save_and_share_service.dart';
+import 'package:spritecraft/domain/repository/i_generation_repository.dart';
+import 'package:spritecraft/domain/repository/i_save_and_share_repository.dart';
 import 'package:spritecraft/domain/repository/image_generation_repository.dart';
 import 'package:spritecraft/domain/repository/save_and_share_repository.dart';
 
@@ -32,9 +34,9 @@ SaveAndShareService saveAndShareService(Ref ref) =>
     const SaveAndShareService();
 
 @Riverpod(keepAlive: true)
-ImageGenerationRepository imageGenerationRepository(Ref ref) =>
+IGenerationRepository imageGenerationRepository(Ref ref) =>
     ImageGenerationRepository(ref.watch(imageGenerationServiceProvider));
 
 @Riverpod(keepAlive: true)
-SaveAndShareRepository saveAndShareRepository(Ref ref) =>
+ISaveAndShareRepository saveAndShareRepository(Ref ref) =>
     SaveAndShareRepository(ref.watch(saveAndShareServiceProvider));

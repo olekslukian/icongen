@@ -44,7 +44,7 @@ final class GeminiGenerationControllerProvider
 }
 
 String _$geminiGenerationControllerHash() =>
-    r'ab320c2a3035478be215fba994d397bd75c90170';
+    r'0eaa0239a8ead3738d872071dc2dbdf8e8039415';
 
 abstract class _$GeminiGenerationController
     extends $Notifier<ImageGenerationState> {

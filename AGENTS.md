@@ -57,7 +57,7 @@ Presentation → Domain → Data
 ## Platform Notes
 
 ### Web
-- Some plugins are **not available on web**: `gal`, `permission_handler`, `image_background_remover`.
+- Some plugins are **not available on web**: `gal`, `permission_handler`.
 - Use `kIsWeb` guards before calling platform-specific APIs.
 - The app is a **PWA** — see `web/manifest.json` and `web/index.html`.
 

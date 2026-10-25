@@ -1,5 +1,6 @@
 import 'package:firebase_ai/firebase_ai.dart';
 import 'package:spritecraft/core/architecture/data/result.dart';
+import 'package:spritecraft/core/architecture/domain/app_failure.dart';
 
 class ImageGenerationService {
   const ImageGenerationService(this.ai);
@@ -19,12 +20,12 @@ class ImageGenerationService {
       );
 
       if (response.inlineDataParts.isEmpty) {
-        return Result.failure(Exception('Failed to generate image'));
+        return const Result.failure(EmptyResponseFailure());
       }
 
       return Result.success(response.inlineDataParts.first);
     } catch (e) {
-      return Result.failure(Exception('Error generating image: $e'));
+      return Result.failure(RemoteFailure('Error generating image: $e'));
     }
   }
 }

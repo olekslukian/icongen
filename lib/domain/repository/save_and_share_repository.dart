@@ -10,20 +10,15 @@ class SaveAndShareRepository implements ISaveAndShareRepository {
 
   @override
   Future<bool> saveImage(GeneratedImageEntity image) async {
-    if (image.invalid) {
-      return false;
-    }
-
-    final result = await _service.saveImage(image.bytes.get);
+    final result = await _service.saveImage(image.bytes);
 
     return result.map(
       onSuccess: (_) => true,
-      onError: (e) {
+      onFailure: (failure) {
         SpriteCraftLogger.error(
           'SaveAndShareRepository.saveImage: Failed to save image',
-          error: e,
+          error: failure,
         );
-
         return false;
       },
     );
@@ -31,20 +26,15 @@ class SaveAndShareRepository implements ISaveAndShareRepository {
 
   @override
   Future<bool> shareImage(GeneratedImageEntity image) async {
-    if (image.invalid) {
-      return false;
-    }
-
-    final result = await _service.shareImage(image.bytes.get);
+    final result = await _service.shareImage(image.bytes);
 
     return result.map(
       onSuccess: (_) => true,
-      onError: (e) {
+      onFailure: (failure) {
         SpriteCraftLogger.error(
           'SaveAndShareRepository.shareImage: Failed to share image',
-          error: e,
+          error: failure,
         );
-
         return false;
       },
     );

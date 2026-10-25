@@ -1,8 +1,9 @@
 import 'dart:typed_data';
-import 'dart:ui';
 
-import 'package:image_background_remover/image_background_remover.dart';
-import 'package:spritecraft/core/architecture/domain/prompt_value_object.dart';
+import 'package:firebase_ai/firebase_ai.dart';
+import 'package:spritecraft/core/architecture/data/result.dart';
+import 'package:spritecraft/core/architecture/domain/app_failure.dart';
+import 'package:spritecraft/core/architecture/domain/sanitizers.dart';
 import 'package:spritecraft/data/service/image_generation_service.dart';
 import 'package:spritecraft/domain/entities/generated_image_entity.dart';
 import 'package:spritecraft/domain/repository/i_generation_repository.dart';
@@ -14,47 +15,36 @@ class ImageGenerationRepository implements IGenerationRepository {
   final ImageGenerationService iconGenerationService;
 
   @override
-  Future<GeneratedImageEntity> generateImage(PromptValueObject prompt) async {
-    final id = DateTime.now().millisecondsSinceEpoch.toString();
+  Future<Result<GeneratedImageEntity>> generateImage(String prompt) async {
+    final result = await iconGenerationService.generateImage([
+      Content.text(prompt),
+    ]);
 
-    if (prompt.invalid) {
-      return GeneratedImageEntity.invalid();
-    }
-
-    final result = await iconGenerationService.generateImage(
-      prompt.completePromptAsContent,
-    );
-
-    return result.map(
-      onSuccess: (data) async {
-        final processedBytes = await _removeBackground(data.bytes);
-
-        return GeneratedImageEntity.fromGenerationResult(
-          id: id,
-          data: processedBytes,
-        );
-      },
-      onError: (e) {
-        SpriteCraftLogger.error(
-          'ImageGenerationRepository.generateIcon: Failed to generate icon',
-          error: e,
-        );
-
-        return GeneratedImageEntity.invalid();
-      },
-    );
+    return switch (result) {
+      Failure(:final failure) => _logged(failure),
+      Success(:final data) => _toEntity(prompt, data.bytes),
+    };
   }
 
-  Future<Uint8List?> _removeBackground(Uint8List imageBytes) async {
-    final processedImage = await BackgroundRemover.instance.removeBg(
-      threshold: 0.6,
-      imageBytes,
-    );
+  Result<GeneratedImageEntity> _toEntity(String prompt, Uint8List bytes) {
+    try {
+      return Result.success(
+        GeneratedImageEntity.fromGeneration(
+          id: DateTime.now().millisecondsSinceEpoch.toString(),
+          prompt: prompt,
+          data: bytes,
+        ),
+      );
+    } on EntityValidationException catch (error) {
+      return _logged(InvalidResponseFailure(error.message));
+    }
+  }
 
-    final byteData = await processedImage.toByteData(
-      format: ImageByteFormat.png,
+  Result<T> _logged<T>(AppFailure failure) {
+    SpriteCraftLogger.error(
+      'ImageGenerationRepository.generateImage: Failed to generate image',
+      error: failure,
     );
-
-    return byteData?.buffer.asUint8List();
+    return Result.failure(failure);
   }
 }

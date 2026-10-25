@@ -1,31 +1,28 @@
-typedef ResultSuccessMapper<T, R> = R Function(T data);
-typedef ResultErrorMapper<R> = R Function(Exception error);
+import 'package:spritecraft/core/architecture/domain/app_failure.dart';
 
 sealed class Result<T> {
-  const Result._({T? data, Exception? error}) : _data = data, _error = error;
+  const Result();
 
-  factory Result.success(T data) => Success<T>(data);
-  factory Result.failure(Exception error) => Failure<T>(error);
-
-  final T? _data;
-  final Exception? _error;
+  const factory Result.success(T data) = Success<T>;
+  const factory Result.failure(AppFailure failure) = Failure<T>;
 
   R map<R>({
-    required ResultSuccessMapper<T, R> onSuccess,
-    required ResultErrorMapper<R> onError,
-  }) {
-    if (_data != null) {
-      return onSuccess(_data as T);
-    } else {
-      return onError(_error ?? Exception('Something went wrong'));
-    }
-  }
+    required R Function(T data) onSuccess,
+    required R Function(AppFailure failure) onFailure,
+  }) => switch (this) {
+    Success(:final data) => onSuccess(data),
+    Failure(:final failure) => onFailure(failure),
+  };
 }
 
 final class Success<T> extends Result<T> {
-  const Success(T data) : super._(data: data);
+  const Success(this.data);
+
+  final T data;
 }
 
 final class Failure<T> extends Result<T> {
-  const Failure(Exception error) : super._(error: error);
+  const Failure(this.failure);
+
+  final AppFailure failure;
 }
