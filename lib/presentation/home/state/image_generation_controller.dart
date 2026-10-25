@@ -1,8 +1,8 @@
 import 'package:flutter_riverpod/legacy.dart';
-import 'package:icongen/core/architecture/domain/prompt_value_object.dart';
-import 'package:icongen/domain/repository/i_generation_repository.dart';
-import 'package:icongen/domain/repository/save_and_share_repository.dart';
-import 'package:icongen/presentation/home/state/image_generation_state.dart';
+import 'package:spritecraft/core/architecture/domain/prompt_value_object.dart';
+import 'package:spritecraft/domain/repository/i_generation_repository.dart';
+import 'package:spritecraft/domain/repository/save_and_share_repository.dart';
+import 'package:spritecraft/presentation/home/state/image_generation_state.dart';
 
 class ImageGenerationController extends StateNotifier<ImageGenerationState> {
   ImageGenerationController({

@@ -1,6 +1,6 @@
 import 'package:firebase_ai/firebase_ai.dart';
-import 'package:icongen/core/ai_settings.dart';
-import 'package:icongen/core/architecture/domain/value_object.dart';
+import 'package:spritecraft/core/ai_settings.dart';
+import 'package:spritecraft/core/architecture/domain/value_object.dart';
 
 class PromptValueObject extends ValueObject<String> {
   PromptValueObject(super.value);

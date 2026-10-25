@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
-import 'package:icongen/core/architecture/domain/prompt_value_object.dart';
-import 'package:icongen/domain/entities/generated_image_entity.dart';
+import 'package:spritecraft/core/architecture/domain/prompt_value_object.dart';
+import 'package:spritecraft/domain/entities/generated_image_entity.dart';
 
 enum ImageGenerationStatus {
   initial,

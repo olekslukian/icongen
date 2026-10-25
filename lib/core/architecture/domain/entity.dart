@@ -1,7 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
-import 'package:icongen/core/architecture/domain/validable.dart';
+import 'package:spritecraft/core/architecture/domain/validable.dart';
 
 abstract class Entity extends Equatable implements IValidable {
   const Entity();

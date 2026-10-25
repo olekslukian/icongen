@@ -1,5 +1,5 @@
-name: icongen
-description: "An AI icon generator"
+name: spritecraft
+description: "An AI pixel art generator and editor"
 
 publish_to: 'none'
 

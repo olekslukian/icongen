@@ -1,4 +1,4 @@
-import 'package:icongen/core/architecture/domain/value_object_base.dart';
+import 'package:spritecraft/core/architecture/domain/value_object_base.dart';
 
 class ValueObject<T extends Object> extends ValueObjectBase<T> {
   ValueObject(T? value) {

@@ -1,6 +1,6 @@
 import 'dart:typed_data';
 
-import 'package:icongen/core/architecture/domain/value_object.dart';
+import 'package:spritecraft/core/architecture/domain/value_object.dart';
 
 class BytesValueObject extends ValueObject<Uint8List> {
   BytesValueObject(super.value);

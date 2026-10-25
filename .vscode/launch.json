@@ -1,9 +1,8 @@
 {
   "version": "0.1.0",
   "configurations": [
-    
     {
-      "name": "Icongen",
+      "name": "SpriteCraft",
       "request": "launch",
       "type": "dart",
       "flutterMode": "debug",

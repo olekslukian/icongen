@@ -1,9 +1,9 @@
 import 'dart:typed_data';
 
-import 'package:icongen/core/architecture/domain/bytes_value_object.dart';
-import 'package:icongen/core/architecture/domain/entity.dart';
-import 'package:icongen/core/architecture/domain/validable.dart';
-import 'package:icongen/core/architecture/domain/value_object.dart';
+import 'package:spritecraft/core/architecture/domain/bytes_value_object.dart';
+import 'package:spritecraft/core/architecture/domain/entity.dart';
+import 'package:spritecraft/core/architecture/domain/validable.dart';
+import 'package:spritecraft/core/architecture/domain/value_object.dart';
 
 class GeneratedImageEntity extends Entity {
   GeneratedImageEntity.fromGenerationResult({

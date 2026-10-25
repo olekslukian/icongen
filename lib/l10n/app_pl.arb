@@ -1,0 +1,16 @@
+{
+  "@@locale": "pl",
+  "enterDescriptionToGenerate": "Wprowadź opis, aby wygenerować pikselową grafikę",
+  "failedToSaveImage": "Nie udało się zapisać obrazu",
+  "failedToShareImage": "Nie udało się udostępnić obrazu",
+  "failedToGenerateImage": "Nie udało się wygenerować obrazu",
+  "generateAnother": "Generuj kolejny",
+  "generateFromText": "Generuj z tekstu",
+  "imageSavedToGallery": "Obraz zapisany do galerii",
+  "imageShared": "Obraz udostępniony",
+  "invalidPromptMessage": "Opis powinien mieć więcej niż 3 znaki",
+  "promptFieldHint": "np. Filiżanka gorącej kawy",
+  "save": "Zapisz",
+  "share": "Udostępnij",
+  "tryAgain": "Spróbuj ponownie"
+}

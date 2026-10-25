@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:icongen/core/constants/app_constants.dart';
-import 'package:icongen/core/theme/app_colors.dart';
+import 'package:spritecraft/core/constants/app_constants.dart';
+import 'package:spritecraft/core/theme/app_colors.dart';
 
 class AppTheme {
   static ThemeData get lightTheme {

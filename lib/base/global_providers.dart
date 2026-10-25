@@ -1,13 +1,13 @@
 import 'package:firebase_ai/firebase_ai.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
-import 'package:icongen/core/ai_settings.dart';
-import 'package:icongen/data/service/image_generation_service.dart';
-import 'package:icongen/data/service/save_and_share_service.dart';
-import 'package:icongen/domain/repository/image_generation_repository.dart';
-import 'package:icongen/domain/repository/save_and_share_repository.dart';
-import 'package:icongen/presentation/home/state/image_generation_controller.dart';
-import 'package:icongen/presentation/home/state/image_generation_state.dart';
+import 'package:spritecraft/core/ai_settings.dart';
+import 'package:spritecraft/data/service/image_generation_service.dart';
+import 'package:spritecraft/data/service/save_and_share_service.dart';
+import 'package:spritecraft/domain/repository/image_generation_repository.dart';
+import 'package:spritecraft/domain/repository/save_and_share_repository.dart';
+import 'package:spritecraft/presentation/home/state/image_generation_controller.dart';
+import 'package:spritecraft/presentation/home/state/image_generation_state.dart';
 
 //Models
 final aiModelProvider = Provider<GenerativeModel>((ref) {

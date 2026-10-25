@@ -6,6 +6,8 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart' as intl;
 
 import 'app_localizations_en.dart';
+import 'app_localizations_pl.dart';
+import 'app_localizations_ru.dart';
 import 'app_localizations_uk.dart';
 
 // ignore_for_file: type=lint
@@ -96,12 +98,14 @@ abstract class AppLocalizations {
   static const List<Locale> supportedLocales = <Locale>[
     Locale('en'),
     Locale('uk'),
+    Locale('pl'),
+    Locale('ru'),
   ];
 
   /// No description provided for @enterDescriptionToGenerate.
   ///
   /// In en, this message translates to:
-  /// **'Enter a description to generate an icon'**
+  /// **'Enter a description to generate pixel art'**
   String get enterDescriptionToGenerate;
 
   /// No description provided for @failedToSaveImage.
@@ -188,7 +192,7 @@ class _AppLocalizationsDelegate
 
   @override
   bool isSupported(Locale locale) =>
-      <String>['en', 'uk'].contains(locale.languageCode);
+      <String>['en', 'pl', 'ru', 'uk'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
@@ -199,6 +203,10 @@ AppLocalizations lookupAppLocalizations(Locale locale) {
   switch (locale.languageCode) {
     case 'en':
       return AppLocalizationsEn();
+    case 'pl':
+      return AppLocalizationsPl();
+    case 'ru':
+      return AppLocalizationsRu();
     case 'uk':
       return AppLocalizationsUk();
   }

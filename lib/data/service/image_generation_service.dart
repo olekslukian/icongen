@@ -1,5 +1,5 @@
 import 'package:firebase_ai/firebase_ai.dart';
-import 'package:icongen/core/architecture/data/result.dart';
+import 'package:spritecraft/core/architecture/data/result.dart';
 
 class ImageGenerationService {
   const ImageGenerationService(this.ai);

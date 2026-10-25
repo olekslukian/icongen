@@ -1,0 +1,16 @@
+{
+  "@@locale": "ru",
+  "enterDescriptionToGenerate": "Введите описание для генерации пиксельного изображения",
+  "failedToSaveImage": "Не удалось сохранить изображение",
+  "failedToShareImage": "Не удалось поделиться изображением",
+  "failedToGenerateImage": "Не удалось сгенерировать изображение",
+  "generateAnother": "Сгенерировать ещё",
+  "generateFromText": "Генерировать из текста",
+  "imageSavedToGallery": "Изображение сохранено в галерею",
+  "imageShared": "Изображение отправлено",
+  "invalidPromptMessage": "Описание должно быть длиннее 3 символов",
+  "promptFieldHint": "например, Чашка горячего кофе",
+  "save": "Сохранить",
+  "share": "Поделиться",
+  "tryAgain": "Попробовать снова"
+}

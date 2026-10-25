@@ -2,9 +2,9 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:gal/gal.dart';
-import 'package:icongen/core/architecture/data/result.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:spritecraft/core/architecture/data/result.dart';
 
 class SaveAndShareService {
   const SaveAndShareService();

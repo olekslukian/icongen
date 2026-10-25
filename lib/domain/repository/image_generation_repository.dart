@@ -1,12 +1,12 @@
 import 'dart:typed_data';
 import 'dart:ui';
 
-import 'package:icongen/core/architecture/domain/prompt_value_object.dart';
-import 'package:icongen/data/service/image_generation_service.dart';
-import 'package:icongen/domain/entities/generated_image_entity.dart';
-import 'package:icongen/domain/repository/i_generation_repository.dart';
-import 'package:icongen/utils/icongen_logger.dart';
 import 'package:image_background_remover/image_background_remover.dart';
+import 'package:spritecraft/core/architecture/domain/prompt_value_object.dart';
+import 'package:spritecraft/data/service/image_generation_service.dart';
+import 'package:spritecraft/domain/entities/generated_image_entity.dart';
+import 'package:spritecraft/domain/repository/i_generation_repository.dart';
+import 'package:spritecraft/utils/spritecraft_logger.dart';
 
 class ImageGenerationRepository implements IGenerationRepository {
   const ImageGenerationRepository(this.iconGenerationService);
@@ -35,7 +35,7 @@ class ImageGenerationRepository implements IGenerationRepository {
         );
       },
       onError: (e) {
-        IcongenLogger.error(
+        SpriteCraftLogger.error(
           'ImageGenerationRepository.generateIcon: Failed to generate icon',
           error: e,
         );

@@ -1,6 +1,6 @@
 import 'package:logger/web.dart';
 
-class IcongenLogger {
+class SpriteCraftLogger {
   static final Logger _instance = Logger();
 
   static void verbose(

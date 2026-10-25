@@ -10,7 +10,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get enterDescriptionToGenerate =>
-      'Enter a description to generate an icon';
+      'Enter a description to generate pixel art';
 
   @override
   String get failedToSaveImage => 'Failed to save image';

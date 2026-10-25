@@ -1,13 +1,13 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:icongen/base/global_providers.dart';
-import 'package:icongen/core/constants/app_constants.dart';
-import 'package:icongen/core/theme/app_colors.dart';
-import 'package:icongen/l10n/generated/app_localizations.dart';
-import 'package:icongen/presentation/home/state/image_generation_controller.dart';
-import 'package:icongen/presentation/home/state/image_generation_state.dart';
-import 'package:icongen/utils/context_extensions.dart';
+import 'package:spritecraft/base/global_providers.dart';
+import 'package:spritecraft/core/constants/app_constants.dart';
+import 'package:spritecraft/core/theme/app_colors.dart';
+import 'package:spritecraft/l10n/generated/app_localizations.dart';
+import 'package:spritecraft/presentation/home/state/image_generation_controller.dart';
+import 'package:spritecraft/presentation/home/state/image_generation_state.dart';
+import 'package:spritecraft/utils/context_extensions.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});

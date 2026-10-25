@@ -1,6 +1,6 @@
 {
   "@@locale": "en",
-  "enterDescriptionToGenerate": "Enter a description to generate an icon",
+  "enterDescriptionToGenerate": "Enter a description to generate pixel art",
   "failedToSaveImage": "Failed to save image",
   "failedToShareImage": "Failed to share image",
   "failedToGenerateImage": "Failed to generate image",
