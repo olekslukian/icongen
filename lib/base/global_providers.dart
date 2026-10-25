@@ -1,16 +1,15 @@
 import 'package:firebase_ai/firebase_ai.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/legacy.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:spritecraft/core/ai_settings.dart';
 import 'package:spritecraft/data/service/image_generation_service.dart';
 import 'package:spritecraft/data/service/save_and_share_service.dart';
 import 'package:spritecraft/domain/repository/image_generation_repository.dart';
 import 'package:spritecraft/domain/repository/save_and_share_repository.dart';
-import 'package:spritecraft/presentation/home/state/image_generation_controller.dart';
-import 'package:spritecraft/presentation/home/state/image_generation_state.dart';
 
-//Models
-final aiModelProvider = Provider<GenerativeModel>((ref) {
+part 'global_providers.g.dart';
+
+@Riverpod(keepAlive: true)
+GenerativeModel aiModel(Ref ref) {
   final ai = FirebaseAI.agentPlatform(location: 'us-central1');
 
   return ai.generativeModel(
@@ -22,29 +21,20 @@ final aiModelProvider = Provider<GenerativeModel>((ref) {
       topK: AiSettings.topK,
     ),
   );
-});
+}
 
-//Services
-final imageGenerationServiceProvider = Provider<ImageGenerationService>(
-  (ref) => ImageGenerationService(ref.watch(aiModelProvider)),
-);
-final saveAndShareServiceProvider = Provider<SaveAndShareService>(
-  (ref) => const SaveAndShareService(),
-);
+@Riverpod(keepAlive: true)
+ImageGenerationService imageGenerationService(Ref ref) =>
+    ImageGenerationService(ref.watch(aiModelProvider));
 
-//Repositories
-final imageGenerationRepositoryProvider = Provider<ImageGenerationRepository>(
-  (ref) => ImageGenerationRepository(ref.watch(imageGenerationServiceProvider)),
-);
-final saveAndShareRepositoryProvider = Provider<SaveAndShareRepository>(
-  (ref) => SaveAndShareRepository(ref.watch(saveAndShareServiceProvider)),
-);
+@Riverpod(keepAlive: true)
+SaveAndShareService saveAndShareService(Ref ref) =>
+    const SaveAndShareService();
 
-//Controllers
-final geminiGenerationControllerProvider =
-    StateNotifierProvider<ImageGenerationController, ImageGenerationState>(
-      (ref) => ImageGenerationController(
-        imageGenerationRepository: ref.watch(imageGenerationRepositoryProvider),
-        saveAndShareRepository: ref.watch(saveAndShareRepositoryProvider),
-      ),
-    );
+@Riverpod(keepAlive: true)
+ImageGenerationRepository imageGenerationRepository(Ref ref) =>
+    ImageGenerationRepository(ref.watch(imageGenerationServiceProvider));
+
+@Riverpod(keepAlive: true)
+SaveAndShareRepository saveAndShareRepository(Ref ref) =>
+    SaveAndShareRepository(ref.watch(saveAndShareServiceProvider));

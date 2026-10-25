@@ -1,19 +1,23 @@
-import 'package:flutter_riverpod/legacy.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:spritecraft/base/global_providers.dart';
 import 'package:spritecraft/core/architecture/domain/prompt_value_object.dart';
 import 'package:spritecraft/domain/repository/i_generation_repository.dart';
 import 'package:spritecraft/domain/repository/save_and_share_repository.dart';
 import 'package:spritecraft/presentation/home/state/image_generation_state.dart';
 
-class ImageGenerationController extends StateNotifier<ImageGenerationState> {
-  ImageGenerationController({
-    required IGenerationRepository imageGenerationRepository,
-    required SaveAndShareRepository saveAndShareRepository,
-  }) : _imageGenerationRepository = imageGenerationRepository,
-       _saveAndShareRepository = saveAndShareRepository,
-       super(ImageGenerationState.initial());
+part 'image_generation_controller.g.dart';
 
-  final IGenerationRepository _imageGenerationRepository;
-  final SaveAndShareRepository _saveAndShareRepository;
+@Riverpod(keepAlive: true)
+class GeminiGenerationController extends _$GeminiGenerationController {
+  late IGenerationRepository _imageGenerationRepository;
+  late SaveAndShareRepository _saveAndShareRepository;
+
+  @override
+  ImageGenerationState build() {
+    _imageGenerationRepository = ref.watch(imageGenerationRepositoryProvider);
+    _saveAndShareRepository = ref.watch(saveAndShareRepositoryProvider);
+    return ImageGenerationState.initial();
+  }
 
   void updatePrompt(String? prompt) {
     state = state.copyWith(

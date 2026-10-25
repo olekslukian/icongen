@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:spritecraft/base/global_providers.dart';
 import 'package:spritecraft/core/constants/app_constants.dart';
 import 'package:spritecraft/core/theme/app_colors.dart';
 import 'package:spritecraft/l10n/generated/app_localizations.dart';
@@ -28,7 +27,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   Future<void> _onSave({
-    required ImageGenerationController controller,
+    required GeminiGenerationController controller,
     required AppLocalizations l10n,
   }) async {
     final success = await controller.saveImage();
@@ -47,7 +46,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   Future<void> _onShare({
-    required ImageGenerationController controller,
+    required GeminiGenerationController controller,
     required AppLocalizations l10n,
   }) async {
     final success = await controller.shareImage();
