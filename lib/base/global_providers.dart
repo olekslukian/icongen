@@ -11,7 +11,7 @@ import 'package:spritecraft/presentation/home/state/image_generation_state.dart'
 
 //Models
 final aiModelProvider = Provider<GenerativeModel>((ref) {
-  final ai = FirebaseAI.vertexAI();
+  final ai = FirebaseAI.agentPlatform(location: 'us-central1');
 
   return ai.generativeModel(
     model: AiSettings.modelName,

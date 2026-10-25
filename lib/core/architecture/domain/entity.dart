@@ -19,7 +19,7 @@ abstract class Entity extends Equatable implements IValidable {
 typedef WhereCallback<T> = bool Function(T element);
 
 abstract class EntityList<T extends Entity> extends Iterable<T>
-    with EquatableMixin
+    with Equatable
     implements IValidable {
   const EntityList(List<T>? entities) : value = entities;
 
